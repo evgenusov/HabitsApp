@@ -1,18 +1,15 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { format, differenceInCalendarDays, parse } from 'date-fns';
+import { format, differenceInCalendarDays } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   CalendarDay,
   CalendarDayName,
   CalendarDayNumber,
   HeaderWrapper,
+  CalendarTodayIndicator,
 } from './Header.styles';
 import { FlatList } from 'react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-
-export type CalendarDayType = {
-  date: Date;
-  dots: Array<string>;
-};
 
 type CalendarHeaderType = {
   days: Date[];
@@ -30,15 +27,13 @@ export const CalendarHeader = ({
   selectedDayIndex,
   onSelectDay,
 }: CalendarHeaderType) => {
+  const { t } = useTranslation();
   const flatListRef = useRef<FlatList>(null);
+  const today = new Date();
 
   useEffect(() => {
     setTimeout(() => {
-      flatListRef.current?.scrollToIndex({
-        index: selectedDayIndex,
-        viewPosition: 0.5,
-        animated: false,
-      });
+      scrollToIndex(selectedDayIndex);
     }, 100);
   }, []);
 
@@ -46,12 +41,23 @@ export const CalendarHeader = ({
     ReactNativeHapticFeedback.trigger('selection', options);
   };
 
+  const scrollToIndex = (index: number) => {
+    flatListRef.current?.scrollToIndex({
+      index: index,
+      viewPosition: 1.1,
+      animated: true,
+    });
+  };
+
   const callbackSelectDate = useCallback(
-    (date) => {
+    (date, index) => {
       onSelectDay(date);
+      scrollToIndex(index);
     },
     [onSelectDay],
   );
+
+  const isToday = (date: Date) => differenceInCalendarDays(today, date) === 0;
 
   return (
     <HeaderWrapper>
@@ -71,9 +77,12 @@ export const CalendarHeader = ({
         keyExtractor={(item, index) => index.toString()}
         renderItem={(item) => (
           <CalendarDay
-            onPress={() => callbackSelectDate(item.item)}
+            onPress={() => callbackSelectDate(item.item, item.index)}
             active={item.index === selectedDayIndex}>
-            <CalendarDayName>{format(item.item, 'iii')}</CalendarDayName>
+            {isToday(item.item) && <CalendarTodayIndicator />}
+            <CalendarDayName active={item.index === selectedDayIndex}>
+              {t(format(item.item, 'EEEEEE').toLocaleLowerCase())}
+            </CalendarDayName>
             <CalendarDayNumber>{format(item.item, 'dd')}</CalendarDayNumber>
           </CalendarDay>
         )}

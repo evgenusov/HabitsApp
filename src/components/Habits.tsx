@@ -5,18 +5,21 @@ import { HabitDayEnum, HabitType } from '../types/habits';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { BoldText, Spacer, SizedBox, SmallText } from './Helpers';
 import { COLORS } from '../constants';
-import {useSelector} from "react-redux";
+import { ThemeType } from '../themes';
+import { useTranslation } from 'react-i18next';
+
+type HabitViewProps = { theme: ThemeType; completed: boolean };
 
 const HabitView = styled.View`
   height: 60px;
-  background: white;
-  border-bottom-color: rgba(234, 241, 244, 0.5);
-  border-bottom-width: 1px;
-  padding: 8px 16px;
+  background: ${({ theme }: HabitViewProps) => theme.colors.card};
+  border-bottom-color: rgba(234, 241, 244, 0.1);
+  border-bottom-width: 0.5px;
+  padding: 8px 0;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  opacity: ${({ completed }: { completed: boolean }) => (completed ? 0.3 : 1)};
+  opacity: ${({ completed }) => (completed ? 0.3 : 1)};
 `;
 
 const HabitDays = styled.View`
@@ -51,17 +54,16 @@ type HabitProps = {
 };
 
 export const Habit = ({ habit, onLongPress, onPress }: HabitProps) => {
+  const { t } = useTranslation();
   const daysNames = {
-    [HabitDayEnum.MONDAY]: 'MO',
-    [HabitDayEnum.TUESDAY]: 'TU',
-    [HabitDayEnum.WEDNESDAY]: 'WE',
-    [HabitDayEnum.THURSDAY]: 'TH',
-    [HabitDayEnum.FRIDAY]: 'FR',
-    [HabitDayEnum.SATURDAY]: 'SA',
-    [HabitDayEnum.SUNDAY]: 'SU',
+    [HabitDayEnum.MONDAY]: t('mo'),
+    [HabitDayEnum.TUESDAY]: t('tu'),
+    [HabitDayEnum.WEDNESDAY]: t('we'),
+    [HabitDayEnum.THURSDAY]: t('th'),
+    [HabitDayEnum.FRIDAY]: t('fr'),
+    [HabitDayEnum.SATURDAY]: t('sa'),
+    [HabitDayEnum.SUNDAY]: t('su'),
   };
-
-  const completePercent = (habit.done / habit.total) * 100;
 
   const _onPress = useCallback(() => {
     onPress(habit);
@@ -71,13 +73,11 @@ export const Habit = ({ habit, onLongPress, onPress }: HabitProps) => {
     onLongPress(habit);
   }, [habit]);
 
-  const isCompleted = completePercent === 100;
-
   return (
     <TouchableWithoutFeedback onPress={_onPress} onLongPress={_onLongPress}>
-      <HabitView completed={isCompleted}>
+      <HabitView completed={habit.isCompleted}>
         <View>
-          <BoldText>{habit.name}</BoldText>
+          <BoldText style={{ fontSize: 19 }}>{habit.name}</BoldText>
           <HabitDays>
             {habit.days
               .filter((day) => day !== null)
@@ -88,24 +88,22 @@ export const Habit = ({ habit, onLongPress, onPress }: HabitProps) => {
           </HabitDays>
         </View>
         <Spacer />
-
         <SizedBox width={16} />
-        {completePercent < 100 && (
+        {habit.progress < 100 && (
           <AnimatedCircularProgress
-            fill={completePercent}
+            fill={habit.progress}
             tintColor={COLORS.mainColor}
             backgroundColor="transparent"
             size={36}
-            width={3}>
+            width={5}>
             {() => (
               <SmallText numberOfLines={1}>
-                {completePercent.toFixed(0)}%
+                {habit.progress.toFixed(0)}%
               </SmallText>
             )}
           </AnimatedCircularProgress>
         )}
-
-        {isCompleted && <HabitStroke />}
+        {habit.isCompleted && <HabitStroke />}
       </HabitView>
     </TouchableWithoutFeedback>
   );

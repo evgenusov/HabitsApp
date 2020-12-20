@@ -14,6 +14,8 @@ export type HabitType = {
   total: number;
   done: number;
   days: (HabitDayEnum | null)[];
+  isCompleted: boolean;
+  progress: number;
 };
 
 export type AddHabitRepeatType = {

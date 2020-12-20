@@ -1,14 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text } from 'react-native';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
+import { FlatList, Text, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import '../i18n';
+
 import { Habit } from '../components/Habits';
 import styled from 'styled-components/native';
 import { HabitCreationForm } from '../components/HabitCreationForm';
 import { habitListSelector } from '../store/habits/selector';
 import { CalendarHeader } from '../components/CalendarHeader/Header';
-import { add, sub, differenceInCalendarDays, getDay, format } from 'date-fns';
-import { Title } from 'react-native-paper';
-import { Container } from '../components/Helpers';
+import { add, sub, differenceInCalendarDays, format } from 'date-fns';
+import { Container, SizedBox } from '../components/Helpers';
 import { EmptyList } from '../components/EmptyList';
 import { HabitType } from '../types/habits';
 import { userSlice } from '../store/users/reducer';
@@ -17,6 +24,11 @@ import {
   signErrorSelector,
 } from '../store/users/selector';
 import { repeatsSlice } from '../store/repeats/reducer';
+import { RootState } from '../store/reducer';
+import { capitalize, getWeekDay } from '../utils';
+import { Widget, WidgetTitle } from '../components/Widget';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { COLORS } from '../constants';
 
 const HabitsListWrapper = styled.View`
   flex: 1;
@@ -27,7 +39,10 @@ export const HomeScreen = ({ navigation }: any) => {
   const [selectedDate, SetSelectedDate] = useState(today);
   const isAuthError = useSelector(signErrorSelector);
   const currentUser = useSelector(getCurrentUserSelector);
-  const habits = useSelector(habitListSelector);
+  const { t } = useTranslation();
+  const habits = useSelector((state: RootState) =>
+    habitListSelector(state, selectedDate),
+  );
 
   const dispatch = useDispatch();
 
@@ -35,13 +50,27 @@ export const HomeScreen = ({ navigation }: any) => {
     dispatch(userSlice.actions.checkUserAuth());
   }, []);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+          <Icon
+            name={'ios-settings-outline'}
+            size={24}
+            color={COLORS.mainColor}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: getTitle(),
     });
   }, [navigation, selectedDate]);
 
-  const currentDayOfWeek = getDay(selectedDate) - 1;
+  const currentDayOfWeek = getWeekDay(selectedDate);
 
   const filteredHabits = habits.filter((habit) =>
     habit.days.includes(currentDayOfWeek),
@@ -75,13 +104,13 @@ export const HomeScreen = ({ navigation }: any) => {
     const date = days[selectedDayIndex];
     const diff = differenceInCalendarDays(today, date);
     if (diff === 1) {
-      return 'Yesterday';
+      return t('home.title.yesterday');
     } else if (diff === -1) {
-      return 'Tomorrow';
+      return t('home.title.tomorrow');
     } else if (diff === 0) {
-      return 'Today';
+      return t('home.title.today');
     } else {
-      return format(date, 'iiii');
+      return capitalize(t(format(date, 'iiii').toLowerCase()));
     }
   };
 
@@ -97,14 +126,16 @@ export const HomeScreen = ({ navigation }: any) => {
 
   const onLongPressHabit = useCallback(
     (habit: HabitType) => {
-      dispatch(
-        repeatsSlice.actions.addRepeat({
-          habitId: habit.id!,
-          countRepeats: 1,
-          date: selectedDate,
-          userId: currentUser!.uid,
-        }),
-      );
+      if (!habit.isCompleted) {
+        dispatch(
+          repeatsSlice.actions.addRepeat({
+            habitId: habit.id!,
+            countRepeats: 1,
+            date: selectedDate,
+            userId: currentUser!.uid,
+          }),
+        );
+      }
     },
     [selectedDate],
   );
@@ -120,45 +151,31 @@ export const HomeScreen = ({ navigation }: any) => {
         selectedDayIndex={selectedDayIndex}
         onSelectDay={SetSelectedDate}
       />
-      <FlatList
-        bounces={false}
-        data={filteredHabits}
-        ListHeaderComponent={() => (
-          <Container>
-            <Title>Your today's habits</Title>
-          </Container>
-        )}
-        contentContainerStyle={styles.habitContent}
-        ListEmptyComponent={<EmptyList />}
-        renderItem={(item) => (
-          <Habit
-            habit={item.item}
-            onPress={onPressHabit}
-            onLongPress={onLongPressHabit}
+      <Container>
+        <Widget>
+          <FlatList
+            bounces={false}
+            data={filteredHabits}
+            ListHeaderComponent={() => (
+              <>
+                <SizedBox height={16} />
+                <WidgetTitle>{t('home.listHabits.title')}</WidgetTitle>
+                <SizedBox height={16} />
+              </>
+            )}
+            ListEmptyComponent={<EmptyList />}
+            renderItem={(item) => (
+              <Habit
+                habit={item.item}
+                onPress={onPressHabit}
+                onLongPress={onLongPressHabit}
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()}
           />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+        </Widget>
+      </Container>
       <HabitCreationForm />
     </HabitsListWrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  habitContent: {
-    padding: 16,
-    marginHorizontal: 16,
-    marginVertical: 16,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    borderColor: 'rgb(207,214,217)',
-    borderWidth: 0.2,
-    shadowColor: 'rgb(207,214,217)',
-    shadowRadius: 10,
-    shadowOpacity: 0.7,
-    shadowOffset: {
-      height: 0,
-      width: 0,
-    },
-  },
-});

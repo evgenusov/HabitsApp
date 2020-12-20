@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { Text } from 'react-native';
 import styled from 'styled-components/native';
 import { HabitDayEnum } from '../types/habits';
+import { BoldText } from './Helpers';
+import { ThemeType } from '../themes';
+import { useTranslation } from 'react-i18next';
 
-const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+type DayItemProps = {
+  active: boolean;
+  theme: ThemeType;
+};
+
+const days = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 
 export const DaysRow = styled.View`
   flex-direction: row;
@@ -17,12 +24,12 @@ export const DayItem = styled.TouchableOpacity`
   min-height: 46px;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgb(234, 241, 244);
+  border: 0.5px solid ${({ theme }) => theme.colors.card};
   margin: 0 5px;
   padding: 3px;
   border-radius: 12px;
-  background: ${({ active }: { active: boolean }) =>
-    active ? 'rgb(234, 241, 244)' : 'transparent'};
+  background: ${({ theme, active }: DayItemProps) =>
+    active ? theme.colors.card : 'transparent'};
 `;
 
 export type DatePickerType = {
@@ -30,28 +37,8 @@ export type DatePickerType = {
   onSelectDays?: (days: (number | null)[]) => void;
 };
 
-export const DayEventsRow = styled.View`
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  margin: 5px 0;
-  height: 20px;
-`;
-
-export type DayEventType = {
-  color: string;
-};
-
-export const DayEvent = styled.View`
-  width: 3px;
-  height: 3px;
-  border-radius: 7px;
-  margin: 3px;
-  background-color: ${(props: DayEventType) => props.color};
-`;
-
 export const DaysPicker = ({ items = [], onSelectDays }: DatePickerType) => {
+  const { t } = useTranslation();
   const [selectedDays, setSelectedDays] = useState([
     items[0] === HabitDayEnum.MONDAY,
     items[1] === HabitDayEnum.TUESDAY,
@@ -74,7 +61,7 @@ export const DaysPicker = ({ items = [], onSelectDays }: DatePickerType) => {
     <DaysRow>
       {selectedDays.map((day, index) => (
         <DayItem active={day} onPress={() => toggleDay(index)}>
-          <Text style={{ fontWeight: 'bold' }}>{days[index]}</Text>
+          <BoldText>{t(days[index]).toUpperCase()}</BoldText>
         </DayItem>
       ))}
     </DaysRow>

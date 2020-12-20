@@ -1,11 +1,25 @@
 import React from 'react';
-import { Image } from 'react-native';
+import styled from 'styled-components/native';
+import { BoldText, Container } from './Helpers';
+import { Text } from 'react-native-paper';
+
+export const EmptyListView = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+`;
 
 export const EmptyList = () => {
   return (
-    <Image
-      source={require('../../assets/images/empty.png')}
-      style={{ width: 300, height: 250 }}
-    />
+    <Container>
+      <EmptyListView>
+        <BoldText>Not Found</BoldText>
+        <Text>
+          You don't have any habits right now. Please touch button 'Add new
+          habit' to create new one
+        </Text>
+      </EmptyListView>
+    </Container>
   );
 };

@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Text } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { COLORS } from '../constants';
+import { useTranslation } from 'react-i18next';
 
 const Form = styled.View`
   flex: 1;
@@ -17,29 +19,23 @@ const Form = styled.View`
   right: 0;
 `;
 
-const FormInput = styled.TouchableOpacity`
-  width: 200px;
-  height: 40px;
-  background-color: white;
-  border-radius: 20px;
-  justify-content: center;
-  align-items: center;
-  border-width: 1px;
-  border-color: rgba(95, 158, 160, 0.35);
+const FormButton = styled(Button)`
+  box-shadow: 0 0 50px ${COLORS.mainColorOpacity};
 `;
 
 export const HabitCreationForm = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
-  const onPressInput = () => {
+  const onPress = () => {
     navigation.navigate('Create');
   };
 
   return (
     <Form>
-      <FormInput onPress={onPressInput}>
-        <Text>Add new habit</Text>
-      </FormInput>
+      <FormButton mode={'contained'} onPress={onPress}>
+        {t('buttons.createHabit')}
+      </FormButton>
     </Form>
   );
 };

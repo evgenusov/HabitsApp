@@ -8,15 +8,18 @@ import { HabitDayEnum, HabitType } from '../types/habits';
 import { useDispatch } from 'react-redux';
 import { habitSlice } from '../store/habits/reducer';
 import { useNavigation } from '@react-navigation/native';
+import { COLORS } from '../constants';
+import { useTranslation } from 'react-i18next';
 
 const FormWrapper = styled.View`
-  background: white;
   flex: 1;
   flex-direction: column;
   padding: 16px;
 `;
 
 export const HabitCreationScreen = () => {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -32,15 +35,15 @@ export const HabitCreationScreen = () => {
     null,
   ]);
 
-  const [repeats, setRepeats] = useState(3);
+  const [repeats, setRepeats] = useState<number | string>(3);
 
   const onRepeatsChange = useCallback(
     (text) => {
       const numRepeats = parseInt(text, 0);
-      if (isNaN(numRepeats)) {
-        setRepeats(1);
-      } else {
+      if (!isNaN(numRepeats)) {
         setRepeats(numRepeats);
+      } else {
+        setRepeats('');
       }
     },
     [repeats],
@@ -61,9 +64,12 @@ export const HabitCreationScreen = () => {
     const newHabit: HabitType = {
       name: title,
       days,
-      total: repeats,
+      total: typeof repeats === 'number' ? repeats : 0,
+      isCompleted: false,
+      progress: 0,
       done: 0,
     };
+    // @ts-ignore
     dispatch(habitSlice.actions.createHabit(newHabit));
     navigation.goBack();
   }, [title, days, repeats]);
@@ -75,9 +81,11 @@ export const HabitCreationScreen = () => {
       <FormWrapper>
         <Spacer />
         <TextInput
+          autoFocus={true}
           value={title}
           onChangeText={setTitle}
-          placeholder={'Your new habit'}
+          placeholder={t('input.newHabit.placeholder')}
+          placeholderTextColor={COLORS.gray}
           style={{
             fontSize: 32,
             marginVertical: 16,
@@ -90,7 +98,7 @@ export const HabitCreationScreen = () => {
           onChangeText={onRepeatsChange}
           dense={true}
           mode={'outlined'}
-          label={'Repeats / day'}
+          label={t('input.countRepeats.labels')}
           style={{
             textAlign: 'center',
           }}

@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { ThemeType } from '../themes';
 
 export const Spacer = styled.View`
   flex: 1;
@@ -11,6 +12,7 @@ export const SizedBox = styled.View`
 
 export const BoldText = styled.Text`
   font-weight: bold;
+  color: ${({ theme }: { theme: ThemeType }) => theme.colors.text};
 `;
 
 export const Container = styled.View`

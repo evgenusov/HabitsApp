@@ -1,6 +1,5 @@
 import React, { useCallback, useLayoutEffect } from 'react';
-import { BarChart } from 'react-native-chart-kit';
-import { startOfWeek, endOfWeek } from 'date-fns';
+import BarChart from 'react-native-chart-kit/src/BarChart';
 
 import { Widget, WidgetTitle } from '../components/Widget';
 import {
@@ -21,11 +20,17 @@ import { RootState } from '../store/reducer';
 import { repeatsSlice } from '../store/repeats/reducer';
 import { getCurrentUserSelector } from '../store/users/selector';
 import { getHabitRepeats } from '../store/repeats/selector';
+import { useTheme } from '../hooks';
+import { useTranslation } from 'react-i18next';
 
 // TODO type
 export const HabitScreen = ({ route, navigation }: any) => {
   const fromDate = new Date(route.params.fromDate);
+  const theme = useTheme();
+
   const dispatch = useDispatch();
+
+  const { t } = useTranslation();
 
   const habit = useSelector((state: RootState) =>
     habitSelector(state, route.params.habit.id),
@@ -79,7 +84,15 @@ export const HabitScreen = ({ route, navigation }: any) => {
   }, []);
 
   const data = {
-    labels: ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'],
+    labels: [
+      t('mo').toUpperCase(),
+      t('tu').toUpperCase(),
+      t('we').toUpperCase(),
+      t('th').toUpperCase(),
+      t('fr').toUpperCase(),
+      t('sa').toUpperCase(),
+      t('su').toUpperCase(),
+    ],
     datasets: [
       {
         data: barChartData,
@@ -89,16 +102,16 @@ export const HabitScreen = ({ route, navigation }: any) => {
   };
 
   const chartConfig = {
-    backgroundColor: '#e26a00',
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
+    backgroundColor: 'transparent',
+    backgroundGradientFrom: theme.colors.card,
+    backgroundGradientTo: theme.colors.card,
     fillShadowGradientOpacity: 0.5,
     barPercentage: 0.7,
     decimalPlaces: 0,
     barRadius: 12,
     strokeWidth: 0,
     fillShadowGradient: COLORS.mainColor,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+    color: () => theme.colors.text,
     style: {
       borderRadius: 16,
     },
@@ -108,7 +121,7 @@ export const HabitScreen = ({ route, navigation }: any) => {
     <ScrollView>
       <Container>
         <Widget>
-          <WidgetTitle>Your daily progress</WidgetTitle>
+          <WidgetTitle>{t('habit.dailyProgress.title')}</WidgetTitle>
           <SizedBox height={32} />
           <CenteredBlock>
             <AnimatedCircularProgress
@@ -126,14 +139,14 @@ export const HabitScreen = ({ route, navigation }: any) => {
             <SizedBox height={16} />
             {!isCompleted && (
               <Button mode={'contained'} onPress={onAddRepeat}>
-                Add repeat
+                {t('buttons.repeatHabit')}
               </Button>
             )}
           </CenteredBlock>
         </Widget>
         <SizedBox height={16} />
         <Widget>
-          <WidgetTitle>Your weekly progress</WidgetTitle>
+          <WidgetTitle>{t('habit.weeklyProgress.title')}</WidgetTitle>
           <SizedBox height={32} />
           <BarChart
             data={data}
@@ -147,9 +160,9 @@ export const HabitScreen = ({ route, navigation }: any) => {
             chartConfig={chartConfig}
           />
         </Widget>
-        <SizedBox height={100} />
+        <SizedBox height={16} />
         <Button mode={'text'} color={COLORS.red} onPress={removeHabit}>
-          Delete habit
+          {t('buttons.deleteHabit')}
         </Button>
       </Container>
     </ScrollView>
