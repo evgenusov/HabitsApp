@@ -1,5 +1,5 @@
 import { RootState } from '../reducer';
-import { formatDate, getWeekDay } from '../../utils';
+import { formatDate, getWeekDay, getWeeklyDates } from '../../utils';
 import { HabitType } from '../../types/habits';
 
 export const habitListSelector = (state: RootState, date: Date) => {
@@ -28,5 +28,16 @@ export const habitListSelector = (state: RootState, date: Date) => {
     })
     .sort((a) => (a.isCompleted ? 1 : -1));
 };
+
 export const habitSelector = (state: RootState, habitId: string) =>
   state.habits.data.find((habit) => habit.id === habitId);
+
+export const getAllWeeklyRepeats = (state: RootState, date: Date): number[] => {
+  const dates = getWeeklyDates(date).map((d) => formatDate(d));
+  return dates.map((formattedDate) => {
+    return state.repeats.repeats
+      .filter((repeat) => repeat.date === formattedDate)
+      .map((repeat) => repeat.repeats)
+      .reduce((a, b) => a + b, 0);
+  });
+};

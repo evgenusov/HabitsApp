@@ -10,6 +10,7 @@ import { habitSlice } from '../store/habits/reducer';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../constants';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../hooks';
 
 const FormWrapper = styled.View`
   flex: 1;
@@ -21,6 +22,7 @@ export const HabitCreationScreen = () => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
+  const theme = useTheme();
   const navigation = useNavigation();
 
   const [title, setTitle] = useState('');
@@ -89,6 +91,7 @@ export const HabitCreationScreen = () => {
           style={{
             fontSize: 32,
             marginVertical: 16,
+            color: theme.colors.text,
           }}
         />
         <DaysPicker items={days} onSelectDays={onDaysChange} />

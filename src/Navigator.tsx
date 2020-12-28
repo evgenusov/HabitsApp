@@ -42,6 +42,14 @@ const HomeStackNavigator = () => {
           headerHideShadow: false,
         }}
       />
+      <Stack.Screen
+        name={'Create'}
+        component={HabitCreationScreen}
+        options={{
+          headerTitle: '',
+          stackPresentation: 'modal',
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -54,7 +62,6 @@ export const RootNavigator = ({ theme }: { theme: Theme }) => (
         headerShown: false,
       }}>
       <Stack.Screen name={'Main'} component={HomeStackNavigator} />
-      <Stack.Screen name={'Create'} component={HabitCreationScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );

@@ -18,12 +18,11 @@ export const HeaderWrapper = styled.View`
 
 export const CalendarDay = styled.TouchableOpacity`
   position: relative;
-  flex: 1;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  min-height: 32px;
-  min-width: 42px;
+  height: 70px;
+  width: 42px;
   padding: 4px;
   margin: 0 8px;
   background-color: ${({ active, theme }: CalendarDayProps) =>

@@ -10,6 +10,9 @@ target 'HabbitsTracker' do
 
 
 
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'HabbitsTrackerTests' do
     inherit! :complete
     # Pods for testing

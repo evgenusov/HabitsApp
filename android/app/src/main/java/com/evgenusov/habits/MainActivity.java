@@ -1,4 +1,4 @@
-package com.habbitstracker;
+package com.evgenusov.habits;
 
 import com.facebook.react.ReactActivity;
 

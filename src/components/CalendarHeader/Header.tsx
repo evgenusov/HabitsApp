@@ -8,7 +8,7 @@ import {
   HeaderWrapper,
   CalendarTodayIndicator,
 } from './Header.styles';
-import { FlatList } from 'react-native';
+import { FlatList, Platform } from 'react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 type CalendarHeaderType = {
@@ -19,7 +19,7 @@ type CalendarHeaderType = {
 
 const options = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false,
+  ignoreAndroidSystemSettings: true,
 };
 
 export const CalendarHeader = ({
@@ -34,25 +34,26 @@ export const CalendarHeader = ({
   useEffect(() => {
     setTimeout(() => {
       scrollToIndex(selectedDayIndex);
-    }, 100);
+    }, 300);
   }, []);
 
   const onScroll = () => {
-    ReactNativeHapticFeedback.trigger('selection', options);
+    if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger('selection', options);
+    }
   };
 
   const scrollToIndex = (index: number) => {
     flatListRef.current?.scrollToIndex({
       index: index,
-      viewPosition: 1.1,
+      viewPosition: 1.05,
       animated: true,
     });
   };
 
   const callbackSelectDate = useCallback(
-    (date, index) => {
+    (date) => {
       onSelectDay(date);
-      scrollToIndex(index);
     },
     [onSelectDay],
   );
@@ -65,9 +66,6 @@ export const CalendarHeader = ({
         data={days}
         horizontal={true}
         bounces={false}
-        contentContainerStyle={{
-          paddingHorizontal: 32,
-        }}
         ref={flatListRef}
         onScroll={onScroll}
         showsHorizontalScrollIndicator={false}
@@ -77,7 +75,7 @@ export const CalendarHeader = ({
         keyExtractor={(item, index) => index.toString()}
         renderItem={(item) => (
           <CalendarDay
-            onPress={() => callbackSelectDate(item.item, item.index)}
+            onPress={() => callbackSelectDate(item.item)}
             active={item.index === selectedDayIndex}>
             {isToday(item.item) && <CalendarTodayIndicator />}
             <CalendarDayName active={item.index === selectedDayIndex}>

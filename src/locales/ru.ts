@@ -2,7 +2,7 @@ export default {
   'home.title.today': 'Сегодня',
   'home.title.yesterday': 'Вчера',
   'home.title.tomorrow': 'Завтра',
-  'home.listHabits.title': 'Повторить сегодня',
+  'home.listHabits.title': 'Привычки на сегодня',
   'habit.dailyProgress.title': 'Твой прогресс за день',
   'habit.weeklyProgress.title': 'Стастика за неделю',
   'buttons.createHabit': 'Создать',

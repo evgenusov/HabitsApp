@@ -25,12 +25,13 @@ export const AppRoot = () => {
   const theme = colorScheme === 'dark' ? DarkTheme : LightTheme;
 
   useEffect(() => {
+    console.log('asdad')
     NotificationService.register();
   }, []);
 
   return (
     <>
-      <StatusBar barStyle={barStyle} />
+      <StatusBar barStyle={barStyle} translucent={true} />
       <StoreProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>

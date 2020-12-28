@@ -29,7 +29,7 @@ export const DayItem = styled.TouchableOpacity`
   padding: 3px;
   border-radius: 12px;
   background: ${({ theme, active }: DayItemProps) =>
-    active ? theme.colors.card : 'transparent'};
+    active ? theme.colors.primary : 'transparent'};
 `;
 
 export type DatePickerType = {

@@ -1022,13 +1022,6 @@
   dependencies:
     deep-assign "^3.0.0"
 
-"@react-native-community/async-storage@^1.12.1":
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.12.1.tgz#25f821b4f6b13abe005ad67e47c6f1cee9f27b24"
-  integrity sha512-70WGaH3PKYASi4BThuEEKMkyAgE9k7VytBqmgPRx3MzJx9/MkspwqJGmn3QLCgHLIFUgF1pit2mWICbRJ3T3lg==
-  dependencies:
-    deep-assign "^3.0.0"
-
 "@react-native-community/checkbox@^0.5.6":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@react-native-community/checkbox/-/checkbox-0.5.6.tgz#0be83148e9836e164d5105bb314cae286bd64061"
@@ -1190,23 +1183,23 @@
   dependencies:
     invariant "^2.2.4"
 
-"@react-native-firebase/app@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.2.0.tgz#9c2b1fd2337cd1673f357517dddbab674ca79472"
-  integrity sha512-vyGhE8DJ3NqtiiphiAuzwfVxecVOL1cbIKRQ2gI1sauTf5LigcorxmGxiBQKbuyV1K8pzJwUchb4qktUdbrmjQ==
+"@react-native-firebase/app@^10.3.0":
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-10.3.0.tgz#53bb8125d486d3c7b841c3e6e45316668e4837f1"
+  integrity sha512-4/45zCJm3YLD5YlgTlF2ZDEd3CM6pjCZtx3OYI0hxsdq2//UdeZTgg6Byu3vxk7GTf3jY/E+IBoX8hPDcFU2/Q==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/auth@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-10.2.0.tgz#78a8967f72f0b94b3a438e2dc0789ceccdcf01b9"
-  integrity sha512-8oMa6tMkouS2BoGPC/Sbq5kYVXGscp/QXSBWc0JNanxlPbq5TKS7P9+dMCNKTPdPeOz3GM8y/8hjSspOQft40g==
+"@react-native-firebase/auth@^10.3.1":
+  version "10.3.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-10.3.1.tgz#2e9119cb14617c55ee3604598e5fdeb1e4c594f5"
+  integrity sha512-JxBsFARyUtp6s37HLOelfaAfwgUMTQZ1xLSRdVFcaPk/Rn2zPTvGsG2frjs5kRAxg+X+4q0NZ0gmfbPDy5ffhg==
 
-"@react-native-firebase/firestore@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-10.2.0.tgz#64e51f16840b5050a53c8d9294a5121a0404fac2"
-  integrity sha512-URudHjpSuMG7LqObhC5EeBB+E7aFSljR3wU85Zy0fDOn5fE3+NOOSWyejc7vT7p6S06FlKvRJZZ/6VYT6q/kyQ==
+"@react-native-firebase/firestore@^10.3.1":
+  version "10.3.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-10.3.1.tgz#fbfd0a0bc9a724e3ff297c83c06c49637bb6409d"
+  integrity sha512-K2/c6qVoIVwhsc5r754n4nPmxtk95AuBFMpbZuma/et8mGuq+ZKBVPNH41pOBY9V7Nu+aTqoVdN9vs8yZ/b/og==
 
 "@react-native-firebase/messaging@^10.3.1":
   version "10.3.1"

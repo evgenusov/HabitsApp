@@ -10,11 +10,11 @@ import {
 
 export const getScreenWidth = Dimensions.get('window').width;
 
-export const getWeeklyDates = () => {
-  const startWeek = startOfWeek(new Date(), {
+export const getWeeklyDates = (date: Date = new Date()): Date[] => {
+  const startWeek = startOfWeek(date, {
     weekStartsOn: 1,
   });
-  const endWeek = endOfWeek(new Date(), {
+  const endWeek = endOfWeek(date, {
     weekStartsOn: 1,
   });
   const lastDay = getDate(endWeek);

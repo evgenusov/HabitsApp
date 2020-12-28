@@ -12,7 +12,10 @@ import '../i18n';
 import { Habit } from '../components/Habits';
 import styled from 'styled-components/native';
 import { HabitCreationForm } from '../components/HabitCreationForm';
-import { habitListSelector } from '../store/habits/selector';
+import {
+  getAllWeeklyRepeats,
+  habitListSelector,
+} from '../store/habits/selector';
 import { CalendarHeader } from '../components/CalendarHeader/Header';
 import { add, sub, differenceInCalendarDays, format } from 'date-fns';
 import { Container, SizedBox } from '../components/Helpers';
@@ -25,13 +28,16 @@ import {
 } from '../store/users/selector';
 import { repeatsSlice } from '../store/repeats/reducer';
 import { RootState } from '../store/reducer';
-import { capitalize, getWeekDay } from '../utils';
+import { capitalize, getScreenWidth, getWeekDay } from '../utils';
 import { Widget, WidgetTitle } from '../components/Widget';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants';
+import BarChart from 'react-native-chart-kit/src/BarChart';
+import { useTheme } from '../hooks';
 
-const HabitsListWrapper = styled.View`
+const HabitsListWrapper = styled.ScrollView`
   flex: 1;
+  padding-bottom: 100px;
 `;
 
 export const HomeScreen = ({ navigation }: any) => {
@@ -39,10 +45,49 @@ export const HomeScreen = ({ navigation }: any) => {
   const [selectedDate, SetSelectedDate] = useState(today);
   const isAuthError = useSelector(signErrorSelector);
   const currentUser = useSelector(getCurrentUserSelector);
+  const theme = useTheme();
   const { t } = useTranslation();
   const habits = useSelector((state: RootState) =>
     habitListSelector(state, selectedDate),
   );
+
+  const weeklyRepeats = useSelector((state: RootState) => {
+    return getAllWeeklyRepeats(state, selectedDate);
+  });
+
+  const data = {
+    labels: [
+      t('mo').toUpperCase(),
+      t('tu').toUpperCase(),
+      t('we').toUpperCase(),
+      t('th').toUpperCase(),
+      t('fr').toUpperCase(),
+      t('sa').toUpperCase(),
+      t('su').toUpperCase(),
+    ],
+    datasets: [
+      {
+        data: weeklyRepeats,
+        color: () => 'rgba(134, 65, 244, 1)',
+      },
+    ],
+  };
+
+  const chartConfig = {
+    backgroundColor: 'transparent',
+    backgroundGradientFrom: theme.colors.card,
+    backgroundGradientTo: theme.colors.card,
+    fillShadowGradientOpacity: 0.5,
+    barPercentage: 0.7,
+    decimalPlaces: 0,
+    barRadius: 12,
+    strokeWidth: 0,
+    fillShadowGradient: COLORS.mainColor,
+    color: () => theme.colors.text,
+    style: {
+      borderRadius: 16,
+    },
+  };
 
   const dispatch = useDispatch();
 
@@ -145,37 +190,56 @@ export const HomeScreen = ({ navigation }: any) => {
   }
 
   return (
-    <HabitsListWrapper>
-      <CalendarHeader
-        days={days}
-        selectedDayIndex={selectedDayIndex}
-        onSelectDay={SetSelectedDate}
-      />
-      <Container>
-        <Widget>
-          <FlatList
-            bounces={false}
-            data={filteredHabits}
-            ListHeaderComponent={() => (
-              <>
-                <SizedBox height={16} />
-                <WidgetTitle>{t('home.listHabits.title')}</WidgetTitle>
-                <SizedBox height={16} />
-              </>
-            )}
-            ListEmptyComponent={<EmptyList />}
-            renderItem={(item) => (
-              <Habit
-                habit={item.item}
-                onPress={onPressHabit}
-                onLongPress={onLongPressHabit}
-              />
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </Widget>
-      </Container>
+    <>
+      <HabitsListWrapper>
+        <CalendarHeader
+          days={days}
+          selectedDayIndex={selectedDayIndex}
+          onSelectDay={SetSelectedDate}
+        />
+        <Container>
+          <Widget>
+            <FlatList
+              bounces={false}
+              data={filteredHabits}
+              ListHeaderComponent={() => (
+                <>
+                  <SizedBox height={16} />
+                  <WidgetTitle>{t('home.listHabits.title')}</WidgetTitle>
+                  <SizedBox height={16} />
+                </>
+              )}
+              ListEmptyComponent={<EmptyList />}
+              renderItem={(item) => (
+                <Habit
+                  habit={item.item}
+                  onPress={onPressHabit}
+                  onLongPress={onLongPressHabit}
+                />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </Widget>
+          <SizedBox height={16} />
+          <Widget>
+            <WidgetTitle>{t('habit.weeklyProgress.title')}</WidgetTitle>
+            <SizedBox height={32} />
+            <BarChart
+              data={data}
+              fromZero={true}
+              withInnerLines={false}
+              width={getScreenWidth - 64}
+              height={220}
+              showBarTops={false}
+              yAxisLabel=""
+              yAxisSuffix={''}
+              chartConfig={chartConfig}
+            />
+          </Widget>
+          <SizedBox height={120} />
+        </Container>
+      </HabitsListWrapper>
       <HabitCreationForm />
-    </HabitsListWrapper>
+    </>
   );
 };

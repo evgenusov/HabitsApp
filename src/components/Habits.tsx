@@ -81,9 +81,9 @@ export const Habit = ({ habit, onLongPress, onPress }: HabitProps) => {
           <HabitDays>
             {habit.days
               .filter((day) => day !== null)
-              .map((day) => (
+              .map((day, index) => (
                 // @ts-ignore
-                <HabitDayText>{daysNames[day]}</HabitDayText>
+                <HabitDayText key={index}>{daysNames[day]}</HabitDayText>
               ))}
           </HabitDays>
         </View>

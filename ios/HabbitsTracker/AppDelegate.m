@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
-
+#import <RNCPushNotificationIOS.h>
+@import Firebase;
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -12,8 +13,7 @@
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
 #import <UserNotifications/UserNotifications.h>
-#import <RNCPushNotificationIOS.h>
-@import Firebase;
+
 
 
 

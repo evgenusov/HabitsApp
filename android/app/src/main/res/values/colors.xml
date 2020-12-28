@@ -1,0 +1,7 @@
+<resources>
+    <color name="white">#FFF</color>
+    <color name="color_primary">#2FD27A</color>
+    <color name="color_secondary">#2FD27A</color>
+    <color name="color_accent">#2FD27A</color>
+    <color name="color_status_bar">#FFF</color>
+</resources>
